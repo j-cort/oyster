@@ -24,4 +24,25 @@ describe Oyster do
     expect{ card.deduct 1 }.to change{ card.balance }.by -1
   end
 
+  it "set in_use to be true when touch in" do
+    card.touch_in
+    expect(card).to be_in_journey
+  end
+
+  it "set in_use to be false when touch out" do
+    card.touch_in
+    card.touch_out
+    expect(card).not_to be_in_journey
+  end
+
+  it "in_journey return true when touch in" do
+    card.touch_in
+    expect(card.in_journey?).to eq true
+  end
+
+  it "in_journey return false when touch_in and touch_out" do
+    card.touch_in
+    card.touch_out
+    expect(card.in_journey?).to eq false
+  end
 end

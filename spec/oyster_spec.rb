@@ -18,6 +18,6 @@ describe Oyster do
 
   it "does not allow user to top  up card beyond maximum balance" do
     card = Oyster.new
-    expect{ subject.top_up(Oyster::LIMIT + 1) }.to raise_error "This top would exceed your £#{Oyster::LIMIT} card limit."
+    expect{ subject.top_up(Oyster::LIMIT + 1) }.to raise_error "This top up would exceed your £#{Oyster::LIMIT} card limit."
   end
 end

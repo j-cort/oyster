@@ -11,7 +11,7 @@ class Oyster
   end
 
   def top_up(amount)
-    raise "This top would exceed your £#{Oyster::LIMIT} card limit." if exceed_limit?(amount)
+    raise "This top up would exceed your £#{Oyster::LIMIT} card limit." if exceed_limit?(amount)
     @balance += amount
   end
   

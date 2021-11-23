@@ -29,7 +29,6 @@ class Oyster
     raise "You have less than the £#{MIN_BALANCE} minimum balance, please top up." unless enough_balance?
     @entry_station = station
     @journeys.push({ entry: station })
-
   end
 
   def touch_out(station)
@@ -49,15 +48,3 @@ class Oyster
   end
 
 end
-
-# card.top(5)
-# card.touch_in(streatham)
-# => @entry_station = "streatham"
-# =>  @journeys.push({entry: streatham})
-# card.touch_out(aldgate)
-# => @journeys.last[:exit] = station
-
-
-
-#  @journeys = [{hash}]
-# {entry: "streatham", exit: "aldgate"}

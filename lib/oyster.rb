@@ -3,10 +3,11 @@ class Oyster
   MIN_BALANCE = 1
   attr_reader :balance
   attr_reader :in_use
+  attr_reader :entry_station
 
   def initialize
     @balance = 0
-    @in_use = false
+    @entry_station = nil
   end
 
   def exceed_limit?(amount)
@@ -21,27 +22,27 @@ class Oyster
     raise "This top up would exceed your £#{LIMIT} card limit." if exceed_limit?(amount)
     @balance += amount
   end
-  
-  private 
 
-  def deduct(fare)
-    @balance -= fare
-  end
-  
-  public
-
-  def touch_in
+  def touch_in(station)
     raise "You have less than the £#{MIN_BALANCE} minimum balance, please top up." unless enough_balance?
     @in_use = true
+    @entry_station = station
   end
 
   def touch_out
     @in_use = false
     deduct(MIN_BALANCE)
+    @entry_station = nil
   end
 
   def in_journey?
-    @in_use
+    @entry_station ? true : false
+  end
+  
+  private 
+
+  def deduct(fare)
+    @balance -= fare
   end
 
 end

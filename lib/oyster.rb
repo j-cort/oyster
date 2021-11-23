@@ -1,8 +1,9 @@
 class Oyster
+  # FARE = 1
+  # PENALTY_FARE = 6
   LIMIT = 90
   MIN_BALANCE = 1
   attr_reader :balance
-  attr_reader :in_use
   attr_reader :entry_station
   attr_reader :journeys
 
@@ -10,6 +11,7 @@ class Oyster
     @balance = 0
     @entry_station = nil
     @journeys = []
+    # @current_journey = nil
   end
 
   def exceed_limit?(amount)
@@ -29,21 +31,48 @@ class Oyster
     raise "You have less than the £#{MIN_BALANCE} minimum balance, please top up." unless enough_balance?
     @entry_station = station
     @journeys.push({ entry: station })
+    # if !in_journey?
+      #@current_journey = Journey.new(entry_station)
+    # else
+      # deduct(PENALTY_FARE)
+      # current_journey.fare = PENALTY_FARE
+      # current_journey.exit_station = nil
+      # current_journey.completed = false
+      # @journeys << current_journey
+      # current_journey = Journey.new(entry_station)
   end
 
   def touch_out(station)
+    # if in_journey?
     deduct(MIN_BALANCE)
+      # deduct(FARE)
+      # current_journey.fare = FARE
+      # current_journey.exit_station = station
+      # current_journey.completed = true
+      # @journeys << current_journey
+      # current_journey = nil 
+    # else
+      # current_journey = Journey.new(nil)
+      # deduct(PENALTY_FARE)
+      # current_journey.fare = PENALTY_FARE
+      # current_journey.exit_station = station
+      # current_journey.completed = false
+      # @journeys << current_journey
+      # current_journey = nil 
     @entry_station = nil
     @journeys.last[:exit] = station
+    # journey_instance.exit_station = station
   end
 
   def in_journey?
+    # @current_journey ? true : false
     @entry_station ? true : false
   end
   
   private 
 
   def deduct(fare)
+    #fare = journey.fare
     @balance -= fare
   end
 

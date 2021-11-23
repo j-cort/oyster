@@ -4,10 +4,12 @@ class Oyster
   attr_reader :balance
   attr_reader :in_use
   attr_reader :entry_station
+  attr_reader :journeys
 
   def initialize
     @balance = 0
     @entry_station = nil
+    @journeys = []
   end
 
   def exceed_limit?(amount)
@@ -25,14 +27,15 @@ class Oyster
 
   def touch_in(station)
     raise "You have less than the £#{MIN_BALANCE} minimum balance, please top up." unless enough_balance?
-    @in_use = true
     @entry_station = station
+    @journeys.push({ entry: station })
+
   end
 
-  def touch_out
-    @in_use = false
+  def touch_out(station)
     deduct(MIN_BALANCE)
     @entry_station = nil
+    @journeys.last[:exit] = station
   end
 
   def in_journey?
@@ -46,3 +49,15 @@ class Oyster
   end
 
 end
+
+# card.top(5)
+# card.touch_in(streatham)
+# => @entry_station = "streatham"
+# =>  @journeys.push({entry: streatham})
+# card.touch_out(aldgate)
+# => @journeys.last[:exit] = station
+
+
+
+#  @journeys = [{hash}]
+# {entry: "streatham", exit: "aldgate"}

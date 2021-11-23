@@ -1,3 +1,5 @@
+# require_relative 'journey'
+
 class Oyster
   # FARE = 1
   # PENALTY_FARE = 6
@@ -9,7 +11,7 @@ class Oyster
 
   def initialize
     @balance = 0
-    @entry_station = nil
+    @entry_station = nil # remove
     @journeys = []
     # @current_journey = nil
   end
@@ -35,9 +37,7 @@ class Oyster
       #@current_journey = Journey.new(entry_station)
     # else
       # deduct(PENALTY_FARE)
-      # current_journey.fare = PENALTY_FARE
-      # current_journey.exit_station = nil
-      # current_journey.completed = false
+      # current_journey.exit_station(nil)
       # @journeys << current_journey
       # current_journey = Journey.new(entry_station)
   end
@@ -46,22 +46,18 @@ class Oyster
     # if in_journey?
     deduct(MIN_BALANCE)
       # deduct(FARE)
-      # current_journey.fare = FARE
-      # current_journey.exit_station = station
-      # current_journey.completed = true
+      # current_journey.exit_station(station)
+      # current_journey.completed
       # @journeys << current_journey
       # current_journey = nil 
     # else
       # current_journey = Journey.new(nil)
       # deduct(PENALTY_FARE)
-      # current_journey.fare = PENALTY_FARE
-      # current_journey.exit_station = station
-      # current_journey.completed = false
+      # current_journey.exit_station(station)
       # @journeys << current_journey
       # current_journey = nil 
     @entry_station = nil
     @journeys.last[:exit] = station
-    # journey_instance.exit_station = station
   end
 
   def in_journey?
@@ -72,8 +68,8 @@ class Oyster
   private 
 
   def deduct(fare)
-    #fare = journey.fare
     @balance -= fare
+    # @current_journey.set_fare(fare)
   end
 
 end

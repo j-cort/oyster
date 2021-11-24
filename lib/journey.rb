@@ -1,9 +1,6 @@
 # starting a journey, finishing a journey, calculating the fare of a journey, and returning whether or not the journey is complete.
 
-=begin
-
 class Journey
-  attr_reader :FOR EVERYTHING
 
   def initialize(entry_station)
     @entry_station = entry_station
@@ -28,7 +25,7 @@ class Journey
 
 end
 
-end=
+
 
 
 # def fare

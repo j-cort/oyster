@@ -38,7 +38,6 @@ describe Oyster do
       expect(card).to be_in_journey
     end
 
-
     it "does not allow user to touch in if card is under the minimum balance" do
       expect { card.touch_in(station) }.to raise_error "You have less than the £#{Oyster::MIN_BALANCE} minimum balance, please top up."
     end
@@ -47,6 +46,35 @@ describe Oyster do
       card.top_up(Oyster::MIN_BALANCE)
       expect { card.touch_in(station) }.to change { card.entry_station }.from(nil).to(station)
     end
+
+    it 'check that current journey has been updated' do 
+      card.top_up(Oyster::MIN_BALANCE)
+      card.touch_in(station)
+      expect(card.current_journey).to be_an_instance_of Journey 
+    end
+
+    it 'deducts penalty fare for touching in, without touching out' do
+      card.top_up(Oyster::MIN_BALANCE)
+      card.touch_in(station)
+      expect{ card.touch_in(station) }.to change{ card.balance }.by -(Oyster::PENALTY_FARE)
+    end
+
+    it 'changes exit station to nil after touching in, without touching out' do
+      card.top_up(Oyster::MIN_BALANCE)
+      card.touch_in(station)
+      card.touch_in(station)
+      expect(card.current_journey.exit_station(nil)).to eq nil
+    end
+
+    it "checks that journeys logs previous trip after touching in twice" do
+      card.top_up(Oyster::MIN_BALANCE)
+      card.touch_in(Station.new("Bank", 1))
+      p card.current_journey
+      card.journeys.last
+      expect(card.journeys.last).to have_attributes(:entry_station => station, :exit_station => nil, )
+      # expect(person).to have_attributes(:name => "Jim", :age => 32)
+    end
+    
 
   end
 
@@ -88,19 +116,19 @@ describe Oyster do
       expect(card.in_journey?).to eq true
     end
 
-    it "set in_use to be false when touch out" do
-      card.top_up(Oyster::MIN_BALANCE)
-      card.touch_in(station)
-      card.touch_out(station_b)
-      expect(card).not_to be_in_journey
-    end
+    # it "set in_use to be false when touch out" do
+    #   card.top_up(Oyster::MIN_BALANCE)
+    #   card.touch_in(station)
+    #   card.touch_out(station_b)
+    #   expect(card).not_to be_in_journey
+    # end
 
-    it "in_journey return false when touch_in and touch_out" do
-      card.top_up(Oyster::MIN_BALANCE)
-      card.touch_in(station)
-      card.touch_out(station_b)
-      expect(card.in_journey?).to eq false
-    end
+    # it "in_journey return false when touch_in and touch_out" do
+    #   card.top_up(Oyster::MIN_BALANCE)
+    #   card.touch_in(station)
+    #   card.touch_out(station_b)
+    #   expect(card.in_journey?).to eq false
+    # end
   
   end
 

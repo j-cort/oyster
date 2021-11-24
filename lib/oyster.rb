@@ -1,7 +1,7 @@
 require_relative 'journey'
 
 class Oyster
-  # FARE = 1
+  FARE = 1
   PENALTY_FARE = 6
   LIMIT = 90
   MIN_BALANCE = 1
@@ -35,28 +35,28 @@ class Oyster
       @current_journey = Journey.new(station)
     else
       deduct(PENALTY_FARE)
-      @current_journey.exit_station(nil)
+      @current_journey.set_exit_station(nil)
       @journeys << @current_journey
       @current_journey = Journey.new(entry_station)
     end
   end
 
   def touch_out(station)
-    # if in_journey?
-    deduct(MIN_BALANCE)
-      # deduct(FARE)
-      # current_journey.exit_station(station)
-      # current_journey.completed
-      # @journeys << current_journey
-      # current_journey = nil 
+    if in_journey?
+      deduct(FARE)
+      @current_journey.set_exit_station(station)
+      @current_journey.complete
+      @journeys << current_journey
+      @current_journey = nil 
+    end
     # else
-      # current_journey = Journey.new(nil)
+      # @current_journey = Journey.new(nil)
       # deduct(PENALTY_FARE)
-      # current_journey.exit_station(station)
+      # @current_journey.set_exit_station(station)
       # @journeys << current_journey
-      # current_journey = nil 
-    @entry_station = nil
-    @journeys.last[:exit] = station
+      # @current_journey = nil 
+    # @entry_station = nil #remove
+    # @journeys.last[:exit] = station #remove
   end
 
   def in_journey?

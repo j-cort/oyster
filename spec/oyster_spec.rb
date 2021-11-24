@@ -63,17 +63,24 @@ describe Oyster do
       card.top_up(Oyster::MIN_BALANCE)
       card.touch_in(station)
       card.touch_in(station)
-      expect(card.current_journey.exit_station(nil)).to eq nil
+      expect(card.current_journey.set_exit_station(nil)).to eq nil
     end
 
     it "checks that journeys logs previous trip after touching in twice" do
       card.top_up(Oyster::MIN_BALANCE)
-      card.touch_in(Station.new("Bank", 1))
-      p card.current_journey
-      card.journeys.last
-      expect(card.journeys.last).to have_attributes(:entry_station => station, :exit_station => nil, )
-      # expect(person).to have_attributes(:name => "Jim", :age => 32)
+      card.touch_in(station)
+      card.touch_in(station_b)
+      expect(card.journeys.last.entry_station).to eq station
     end
+
+    it "checks that a new current journey is inialized after touching in twice" do
+      card.top_up(Oyster::MIN_BALANCE)
+      card.touch_in(station)
+      card.touch_in(station_b)
+      expect(card.current_journey).to be_an_instance_of Journey
+    end
+
+
     
 
   end
@@ -104,6 +111,40 @@ describe Oyster do
       card.touch_in(station)
       card.touch_out(station_b)
       expect(card.journeys.last).to eq({entry: station, exit: station_b})
+    end
+
+    it 'deducts normal fare after touching out' do
+      card.top_up(Oyster::MIN_BALANCE)
+      card.touch_in(station)
+      expect{ card.touch_out(station) }.to change{ card.balance }.by -(Oyster::FARE)
+    end
+
+    it "checks exit station is recorded when you touch out" do
+      card.top_up(Oyster::MIN_BALANCE)
+      card.touch_in(station)
+      card.touch_out(station_b)
+      expect(card.journeys.last.exit_station).to eq station_b
+    end
+
+    it "checks journey is completed when you touch out" do
+      card.top_up(Oyster::MIN_BALANCE)
+      card.touch_in(station)
+      card.touch_out(station_b)
+      expect(card.current_journey.complete).to eq true
+    end
+
+    it "checks journey is added to journeys log when you touch out" do
+      card.top_up(Oyster::MIN_BALANCE)
+      card.touch_in(station)
+      card.touch_out(station_b)
+      expect(card.journeys.last.entry_station).to eq station
+    end
+
+    it "checks that current station is set to nil after completing a trip" do
+      card.top_up(Oyster::MIN_BALANCE)
+      card.touch_in(station)
+      card.touch_out(station_b)
+      expect(card.current_journey).to eq nil
     end
 
   end

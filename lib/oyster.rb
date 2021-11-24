@@ -13,7 +13,7 @@ class Oyster
     @balance = 0
     @entry_station = nil # remove
     @journeys = []
-    # @current_journey = nil
+    @current_journey = nil
   end
 
   def exceed_limit?(amount)
@@ -31,8 +31,8 @@ class Oyster
 
   def touch_in(station)
     raise "You have less than the £#{MIN_BALANCE} minimum balance, please top up." unless enough_balance?
-    @entry_station = station
-    @journeys.push({ entry: station })
+    @entry_station = station # remove
+    @journeys.push({ entry: station }) #remove
     # if !in_journey?
       #@current_journey = Journey.new(entry_station)
     # else
@@ -62,7 +62,7 @@ class Oyster
 
   def in_journey?
     # @current_journey ? true : false
-    @entry_station ? true : false
+    @entry_station ? true : false # remove 
   end
   
   private 

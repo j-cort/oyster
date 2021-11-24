@@ -9,7 +9,6 @@ class Oyster
 
   def initialize
     @balance = 0
-    @entry_station = nil # remove
     @journeys = []
     @current_journey = nil
   end
@@ -29,38 +28,43 @@ class Oyster
 
   def touch_in(station)
     raise "You have less than the £#{MIN_BALANCE} minimum balance, please top up." unless enough_balance?
-    # @entry_station = station # remove
-    # @journeys.push({ entry_station: station }) #remove
-    if !in_journey?
-      @current_journey = Journey.new(station)
-    else
-      deduct(PENALTY_FARE)
-      @current_journey.set_exit_station(nil)
-      @journeys << @current_journey
-      @current_journey = Journey.new(entry_station)
-    end
+  
+    !in_journey? ? touch_in_complete(station) : touch_in_incomplete(station) 
+  end
+
+  def touch_in_complete(station)
+    @current_journey = Journey.new(station)
+  end
+  
+  def touch_in_incomplete(station)
+    deduct(PENALTY_FARE)
+    @current_journey.set_exit_station(nil)
+    @journeys << @current_journey
+    @current_journey = Journey.new(entry_station)
   end
 
   def touch_out(station)
-    if in_journey?
-      deduct(FARE)
-      @current_journey.set_exit_station(station)
-      @current_journey.complete
-      @journeys << current_journey
-      @current_journey = nil 
-    end
-    # else
-      # @current_journey = Journey.new(nil)
-      # deduct(PENALTY_FARE)
-      # @current_journey.set_exit_station(station)
-      # @journeys << current_journey
-      # @current_journey = nil 
-    # @entry_station = nil #remove
-    # @journeys.last[:exit] = station #remove
+    in_journey? ? touch_out_complete(station) : touch_out_incomplete(station)
   end
 
   def in_journey?
     @current_journey ? true : false
+  end
+
+  def touch_out_complete(station)
+    deduct(FARE)
+    @current_journey.set_exit_station(station)
+    @current_journey.complete
+    @journeys << current_journey
+    @current_journey = nil 
+  end
+
+  def touch_out_incomplete(station)
+    @current_journey = Journey.new(nil)
+    deduct(PENALTY_FARE)
+    @current_journey.set_exit_station(station)
+    @journeys << current_journey
+    @current_journey = nil 
   end
   
   private 

@@ -42,11 +42,6 @@ describe Oyster do
       expect { card.touch_in(station) }.to raise_error "You have less than the £#{Oyster::MIN_BALANCE} minimum balance, please top up."
     end
 
-    it "update @entry_station when touch in" do
-      card.top_up(Oyster::MIN_BALANCE)
-      expect { card.touch_in(station) }.to change { card.entry_station }.from(nil).to(station)
-    end
-
     it 'check that current journey has been updated' do 
       card.top_up(Oyster::MIN_BALANCE)
       card.touch_in(station)
@@ -93,12 +88,6 @@ describe Oyster do
       expect { card.touch_out(station_b) }.to change{card.balance}.by(-Oyster::MIN_BALANCE)
     end
 
-    it "update @entry_station to nil when touch out" do
-      card.top_up(Oyster::MIN_BALANCE)
-      card.touch_in(station)
-      expect { card.touch_out(station_b) }.to change { card.entry_station }.from(station).to(nil)
-    end
-
     it "creates a journey after touch_in and touch_out" do
       card.top_up(Oyster::MIN_BALANCE)
       card.touch_in(station)
@@ -110,7 +99,8 @@ describe Oyster do
       card.top_up(Oyster::MIN_BALANCE)
       card.touch_in(station)
       card.touch_out(station_b)
-      expect(card.journeys.last).to eq({entry: station, exit: station_b})
+      expect(card.journeys.last.entry_station).to eq station
+      expect(card.journeys.last.exit_station).to eq station_b
     end
 
     it 'deducts normal fare after touching out' do
@@ -130,7 +120,7 @@ describe Oyster do
       card.top_up(Oyster::MIN_BALANCE)
       card.touch_in(station)
       card.touch_out(station_b)
-      expect(card.current_journey.complete).to eq true
+      expect(card.journeys.last.completed).to eq true
     end
 
     it "checks journey is added to journeys log when you touch out" do
@@ -138,7 +128,7 @@ describe Oyster do
       card.touch_in(station)
       card.touch_out(station_b)
       expect(card.journeys.last.entry_station).to eq station
-    end
+    end 
 
     it "checks that current station is set to nil after completing a trip" do
       card.top_up(Oyster::MIN_BALANCE)
@@ -146,6 +136,30 @@ describe Oyster do
       card.touch_out(station_b)
       expect(card.current_journey).to eq nil
     end
+
+    it "Entry station is set to nil, when touching out without touching in" do
+      card.top_up(Oyster::MIN_BALANCE)
+      card.touch_out(station_b)
+      expect(card.journeys.last.entry_station).to eq nil
+    end
+
+    it "charges penalty fare when touching out without touching in" do
+      card.top_up(Oyster::MIN_BALANCE)
+      expect{ card.touch_out(station_b) }.to change{ card.balance }.by -(Oyster::PENALTY_FARE)
+    end
+
+    it "Check journey is logged in journeys, when touching out without touching in" do
+      card.top_up(Oyster::MIN_BALANCE)
+      card.touch_out(station_b)
+      expect(card.journeys.last.exit_station).to eq station_b
+    end
+
+    it "Checks current journey is reset, after touching out without touching in" do
+      card.top_up(Oyster::MIN_BALANCE)
+      card.touch_out(station_b)
+      expect(card.current_journey).to eq nil
+    end
+    
 
   end
 

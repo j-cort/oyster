@@ -7,8 +7,9 @@ class Oyster
   MIN_BALANCE = 1
   attr_reader :balance, :entry_station, :journeys, :current_journey
 
-  def initialize
+  def initialize()#journey_log = JourneyLog.new
     @balance = 0
+    # @journey_log = journey_log
     @journeys = []
     @current_journey = nil
   end
@@ -27,20 +28,23 @@ class Oyster
   end
 
   def touch_in(station)
+    # @journey_log.start
     raise "You have less than the £#{MIN_BALANCE} minimum balance, please top up." unless enough_balance?
   
     !in_journey? ? touch_in_complete(station) : touch_in_incomplete(station) 
   end
 
   def touch_in_complete(station)
-    @current_journey = Journey.new(station)
+    @current_journey = Journey.new
+    @current_journey.set_entry_station(station)
   end
   
   def touch_in_incomplete(station)
     deduct(PENALTY_FARE)
     @current_journey.set_exit_station(nil)
     @journeys << @current_journey
-    @current_journey = Journey.new(entry_station)
+    @current_journey = Journey.new
+    @current_journey.set_entry_station(station)
   end
 
   def touch_out(station)
@@ -60,14 +64,14 @@ class Oyster
   end
 
   def touch_out_incomplete(station)
-    @current_journey = Journey.new(nil)
+    @current_journey = Journey.new
     deduct(PENALTY_FARE)
     @current_journey.set_exit_station(station)
     @journeys << current_journey
     @current_journey = nil 
   end
   
-  private 
+  private
 
   def deduct(fare)
     @balance -= fare

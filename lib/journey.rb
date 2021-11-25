@@ -1,9 +1,11 @@
 # starting a journey, finishing a journey, calculating the fare of a journey, and returning whether or not the journey is complete.
+require 'journey_log'
 
 class Journey
   attr_reader :entry_station, :exit_station, :fare, :completed
-  def initialize(entry_station)
-    @entry_station = entry_station
+  
+  def initialize(entry_station = nil)
+    @entry_station = nil
     @exit_station = nil
     @fare
     @completed = false
@@ -11,6 +13,10 @@ class Journey
 
   def set_exit_station(station)
     @exit_station = station
+  end
+
+  def set_entry_station(station)
+    @entry_station = station
   end
 
   def set_fare(fare)

@@ -11,13 +11,15 @@ class Journey
     @completed = false
    end
 
-  def set_exit_station(station)
-    @exit_station = station
+  def set_entry_station(station_a)
+    @entry_station = station_a
   end
 
-  def set_entry_station(station)
-    @entry_station = station
+  def set_exit_station(station_b)
+    @exit_station = station_b
   end
+
+ 
 
   def set_fare(fare)
     @fare = fare

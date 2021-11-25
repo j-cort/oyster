@@ -1,8 +1,10 @@
 require_relative 'journey'
 
 class Oyster
-  FARE = 1
-  PENALTY_FARE = 6
+  FARE = 1 # remove
+  PENALTY_FARE = 6 # remove
+  # JourneyLog::FARE = 1
+  # JourneyLog::PENALTY_FARE = 6
   LIMIT = 90
   MIN_BALANCE = 1
   attr_reader :balance, :entry_station, :journeys, :current_journey
@@ -27,24 +29,30 @@ class Oyster
     @balance += amount
   end
 
-  def touch_in(station)
-    # @journey_log.start
+  def touch_in(station_a)
+    
     raise "You have less than the £#{MIN_BALANCE} minimum balance, please top up." unless enough_balance?
   
-    !in_journey? ? touch_in_complete(station) : touch_in_incomplete(station) 
+    !in_journey? ? touch_in_complete(station_a) : touch_in_incomplete(station_a) 
   end
 
-  def touch_in_complete(station)
-    @current_journey = Journey.new
-    @current_journey.set_entry_station(station)
+  def touch_in_complete(station_a) 
+    # @journey_log.start(station_a)
+    @current_journey = Journey.new #remove
+    @current_journey.set_entry_station(station)#remove
   end
   
-  def touch_in_incomplete(station)
-    deduct(PENALTY_FARE)
-    @current_journey.set_exit_station(nil)
-    @journeys << @current_journey
-    @current_journey = Journey.new
-    @current_journey.set_entry_station(station)
+  def touch_in_incomplete(station_b)
+      deduct(PENALTY_FARE) # remove
+      deduct(JourneyLog::PENALTY_FARE) 
+     # @journey_log.finish(nil)
+     # add_to_log(@journey_log)
+     # @journey_log.start(station_b)
+    @current_journey.set_exit_station(nil) #remove
+    @journeys << @current_journey #remove
+    @current_journey = Journey.new # remove
+    @current_journey.set_entry_station(station) #remove 
+
   end
 
   def touch_out(station)
@@ -75,7 +83,7 @@ class Oyster
 
   def deduct(fare)
     @balance -= fare
-    @current_journey.set_fare(fare)
+    @current_journey.set_fare(fare) 
   end
 
 end

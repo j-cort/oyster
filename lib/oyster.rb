@@ -14,6 +14,7 @@ class Oyster
 
   def exceed_limit?(amount)
     @balance + amount > LIMIT
+    
   end
 
   def enough_balance?

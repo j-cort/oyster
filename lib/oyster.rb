@@ -5,16 +5,15 @@ class Oyster
   JourneyLog::PENALTY_FARE = 6
   LIMIT = 90
   MIN_BALANCE = 1
-  attr_reader :balance, :entry_station, :journeys, :current_journey
+  attr_reader :balance, :entry_station, :journey_log, :current_journey
 
   def initialize(journey_log = JourneyLog.new)
     @balance = 0
-    @journeys = []
+    @journey_log = journey_log
   end
 
   def exceed_limit?(amount)
     @balance + amount > LIMIT
-    
   end
 
   def enough_balance?
@@ -39,7 +38,7 @@ class Oyster
   
   def touch_in_incomplete(station_b)
     deduct(JourneyLog::PENALTY_FARE) 
-    @journey_log.finish(nil)
+    @journey_log.finish_trip(nil)
     add_to_log(@journey_log)
     @journey_log.start(station_b)
   end
@@ -49,19 +48,19 @@ class Oyster
   end
 
   def in_journey?
-    @journey_log.finished ? false : true
+    @journey_log.current_journey.completed ? false : true
   end
 
   def touch_out_complete(station_b)
     deduct(JourneyLog::FARE)
-     @journey_log.finish(station_b)
+     @journey_log.finish_trip(station_b)
      @journey_log.add_to_log(@journey_log)
   end
 
   def touch_out_incomplete(station_b)
     @journey_log.start(nil)
     deduct(JourneyLog::PENALTY_FARE) 
-    @journey_log.finish(station_b)
+    @journey_log.finish_trip(station_b)
     @journey_log.add_to_log(@journey_log)
   end
   

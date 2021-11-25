@@ -8,7 +8,7 @@ class Journey
     @entry_station = nil
     @exit_station = nil
     @fare
-    @completed = false
+    # @completed = false
     @finished = false
    end
 
@@ -25,11 +25,11 @@ class Journey
     @fare = fare
   end
   
-  def complete
-    @completed = true
-  end
+  # def complete
+  #   @completed = true
+  # end
 
-  def finish
+  def completed
     @finished = true
   end
 

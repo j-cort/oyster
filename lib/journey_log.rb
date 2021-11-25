@@ -16,11 +16,13 @@ class JourneyLog
   
   def finish(station_b)
     @journey.set_exit_station(station_b)
-    # if @journey.entry_station == nil || @journey.exit_station == nil 
+
+    if @journey.entry_station == nil || @journey.exit_station == nil 
         set_fare(PENALTY_FARE)
       else 
         set_fare(FARE)
       end
+      @journey.finish
   end
 
   def add_to_log(journey)

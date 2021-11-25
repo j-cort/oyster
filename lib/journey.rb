@@ -2,13 +2,14 @@
 require 'journey_log'
 
 class Journey
-  attr_reader :entry_station, :exit_station, :fare, :completed
+  attr_reader :entry_station, :exit_station, :fare, :completed, :finished
   
   def initialize(entry_station = nil)
     @entry_station = nil
     @exit_station = nil
     @fare
     @completed = false
+    @finished = false
    end
 
   def set_entry_station(station_a)
@@ -19,7 +20,6 @@ class Journey
     @exit_station = station_b
   end
 
- 
 
   def set_fare(fare)
     @fare = fare
@@ -29,7 +29,9 @@ class Journey
     @completed = true
   end
 
-
+  def finish
+    @finished = true
+  end
 
 end
 
